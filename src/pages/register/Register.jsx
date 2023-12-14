@@ -9,10 +9,28 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [confirm_password, setConfirmPassword] = useState('')
     const [form, setForm] = useState(false)
+    const [wrong, setWrong] = useState(false)
     const navigate = useNavigate()
-    const submit = (e) =>{
+
+    const submit = async(e) =>{
         e.preventDefault()
-        setForm(true)
+        try{
+            const {data} =  await axios.post(`users/check-user/`,{
+                username, email
+            })
+
+            if(data.username || data.email){
+                setWrong(true)
+            }else{
+                setForm(true)
+            }
+            
+        }catch(e){
+            if( e.response.status > 200){
+                return e.message
+            }
+        }
+        
     }
     const fetching = async (e) =>{
         e.preventDefault()
@@ -38,6 +56,7 @@ const Register = () => {
         </Box>
         <Button type='submit'>Submit</Button>
     </form>
+    <Heading>{wrong && 'Данный пользователь уже зарегистрирован'}</Heading>
    </Box>
   <Box display={form ? 'block' : 'none'}>
   <form onSubmit={fetching} >
@@ -53,7 +72,7 @@ const Register = () => {
         <Button type='submit'>Submit</Button>
     </form>
   </Box>
-  <button onClick={fetching}>check</button>
+
 </Box>
   )
 }

@@ -6,70 +6,90 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { getAccess } from '../../store/reducers/access'
+import ForgotPassword from './ForgotPassword'
+import { useFormik, Formik, Form, Field } from 'formik'
+import { loginValidation } from './LoginValidation'
 
 const Login = () => {
     const navigate = useNavigate()
-    const [username,setName] = useState('')
-    const [password,setPassword] = useState('')
+    const [wrongMasseges, setWrongMessages] = useState(false)
+    // const [username, setUserName] = useState('')
+    // const [password, setPassword] = useState('')
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
     const dispatch = useDispatch()
 
 
 
-    const submit = async e => {
-        e.preventDefault()
-       const res =  await axios.post(`users/login/`,{
-        username, password
-        })
-        setAccessToken(res.data.access);
-        setRefreshToken(res.data.refresh);
-        localStorage.setItem('refreshToken', res.data.refresh);
-        dispatch(getAccess(res.data.access))
-  
-       navigate('/')
-    }
-    useEffect(() => {
-        const refreshAccessToken = async () => {
-            try {
-                const refreshResponse = await axios.post('users/login/refresh/', {
-                    refresh: refreshToken
-                });
-    
-                // Обновляем access token в состоянии компонента
-                setAccessToken(refreshResponse.data.access);
-            } catch (refreshError) {
-                // Обработка ошибок при обновлении токена
-                console.error(refreshError);
-            }
-        };
-    
-        if (accessToken) {
-            // Проверяем срок действия access token
-            const decodedToken = jwtDecode(accessToken);
-            const currentTime = Date.now() / 1000; // в секундах
-    
-            if (decodedToken.exp < currentTime) {
-                // Если access token истек, обновляем его
-                refreshAccessToken();
-            }
+    const submit = async (username, password) => {
+        try {
+          const res = await axios.post(`users/login/`, {
+            username,
+            password,
+          });
+      
+          const { access, refresh } = res.data;
+      
+          setAccessToken(access);
+          setRefreshToken(refresh);
+          localStorage.setItem('refreshToken', refresh);
+          dispatch(getAccess(access));
+      
+          // Устанавливаем токен в заголовок для авторизации запросов
+          axios.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      
+          navigate('/');
+        } catch (error) {
+          if (error.response && error.response.status >= 400) {
+            setWrongMessages(true);
+          }
         }
-    }, [accessToken, refreshToken]);
-  
+      };   
+      
+
+    const onSubmitHandler = (values, { resetForm, setSubmitting }) => {
+        
+        submit(values.name, values.password)
+        // resetForm();
+        // setSubmitting(false);
+      };
+    const initialValues = {
+        name : '',
+        password : ''
+    }
+
+
   return (
     <Box>
-        <form onSubmit={submit}>
-            <Heading>login</Heading>
-            <Box>
-                <Input onChange={e => setName(e.target.value)} type='text' placeholder='name'/>
-                <FormLabel>name</FormLabel>
-            </Box>
-            <Box>
-                <Input onChange={e => setPassword(e.target.value)} type='password' placeholder='password'/>
+        <Formik
+          initialValues = {initialValues}
+          validationSchema = {loginValidation}
+          onSubmit={onSubmitHandler}
+        >
+            {({errors})=>
+                <Form >
+                <Heading>login</Heading>
+                <Box>
+                        <FormLabel>name</FormLabel>
+                        <Field  type='text' placeholder='name' name='name'></Field>
+               
+                        {errors.name && <small>{errors.name}</small>}   
+                
+                </Box>
+                <Box>
                 <FormLabel>password</FormLabel>
-            </Box>
-            <Button type='submit'>Submit</Button>
-        </form>
+    
+                    <Field  type='password' placeholder='password' name='password'></Field>
+                    {errors && <small>{errors.password}</small>}
+                </Box>
+                <Button type='submit'>Submit</Button>
+            </Form>
+            }
+    
+        </Formik>
+      
+        <Heading>{wrongMasseges && 'неверный логин или парольxxx'}</Heading>
+        <ForgotPassword/>
     </Box>
   )
 }
