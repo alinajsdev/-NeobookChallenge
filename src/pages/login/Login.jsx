@@ -3,7 +3,9 @@ import axios from 'axios'
 import { jwtDecode } from 'jwt-decode'
 
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { getAccess } from '../../store/reducers/access'
 
 const Login = () => {
     const navigate = useNavigate()
@@ -11,6 +13,9 @@ const Login = () => {
     const [password,setPassword] = useState('')
     const [accessToken, setAccessToken] = useState(null);
     const [refreshToken, setRefreshToken] = useState(null);
+    const dispatch = useDispatch()
+
+
 
     const submit = async e => {
         e.preventDefault()
@@ -20,7 +25,7 @@ const Login = () => {
         setAccessToken(res.data.access);
         setRefreshToken(res.data.refresh);
         localStorage.setItem('refreshToken', res.data.refresh);
-
+        dispatch(getAccess(res.data.access))
   
        navigate('/')
     }

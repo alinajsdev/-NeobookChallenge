@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const userSlice= createSlice({
+export const userSlice = createSlice({
     name: 'user',
     initialState : {
         users : []
