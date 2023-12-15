@@ -35,7 +35,7 @@ const ForgotPassword = () => {
   };
   return (
     <>
-      <Button mt={3} ref={btnRef} onClick={onOpen}>
+      <Button bg={'transparent'} _hover={{bg :"transparent"}} w={'107px'} fontWeight={'500'} color={'#5458EA'} fontSize={'14px'} fontFamily={'Inter, sans-serif'}  m='10px  0 50px 0' mt={3} ref={btnRef} onClick={onOpen}>
         Забыли пароль?
       </Button>
 

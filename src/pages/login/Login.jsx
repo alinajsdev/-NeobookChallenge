@@ -1,16 +1,26 @@
 import axios from "axios";
-import {Formik, Form, Field } from "formik";
-import { Box, Button, FormLabel, Heading } from "@chakra-ui/react";
+import {Formik, Form, Field, useFormikContext } from "formik";
+import { Box, Button, Flex,  FormLabel,  Heading, Image } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { getAccess } from "../../store/reducers/access";
 import ForgotPassword from "./ForgotPassword";
 import { loginValidation } from "./LoginValidation";
 
+import Eye from '../../assets/images/eye-disable.png'
+import EyeClose from '../../assets/images/eye.png'
+import AuthBg from "../../components/AuthBg";
+
 const Login = () => {
   const navigate = useNavigate();
+  const [password, setPassword] = useState(false)
+
+
+  
   const [wrongMasseges, setWrongMessages] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [accessToken, setAccessToken] = useState(null);
@@ -30,8 +40,6 @@ const Login = () => {
       setRefreshToken(refresh);
       localStorage.setItem("refreshToken", refresh);
       dispatch(getAccess(access));
-
-      // Устанавливаем токен в заголовок для авторизации запросов
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
 
       navigate("/");
@@ -42,48 +50,72 @@ const Login = () => {
     }
   };
 
-  const onSubmitHandler = (values, { resetForm, setSubmitting }) => {
+  const onSubmitHandler = (values) => {
     submit(values.name, values.password);
+
   };
   const initialValues = {
     name: "",
     password: "",
   };
 
+  const showToastMessage = () => {
+    toast.success("Success Notification !", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   return (
-    <Box>
-      <Formik
+    <Flex>
+    <AuthBg/>
+     <Flex flexDirection={'column'}  mt={'240px'} ml={'192px'} position={'relative'}>
+     <ToastContainer />
+     <Formik
         initialValues={initialValues}
         validationSchema={loginValidation}
         onSubmit={onSubmitHandler}
+
+        
       >
-        {({ errors }) => (
-          <Form>
-            <Heading>login</Heading>
-            <Box>
-              <FormLabel>name</FormLabel>
-              <Field type="text" placeholder="name" name="name"></Field>
-
-              {errors.name && <small>{errors.name}</small>}
-            </Box>
-            <Box>
-              <FormLabel>password</FormLabel>
-
+        {({ errors , values}) => (
+          <Form style={{display : 'flex', flexDirection:"column"}}>
+            <Flex flexDirection={'column'}>
+              <FormLabel style={{ opacity: values.name ? 1 : 0 }} color={'#C0C0C0'} fontSize={'14px'} fontFamily={'Inter '} mt={'30px'} position={'absolute'} top={'-40px'} fontWeight={'400'}>Имя пользователя</FormLabel>
+              <Field   type="text" placeholder="Имя пользователя" name="name"  ></Field>
+              <Box width={'335px'} height={'0.5px'} bg={'#C0C0C0'}/>
+              {/* {errors.name && <small>{errors.name}</small>} */}
+            </Flex>
+           <Flex justifyContent={'space-between'} >
+           <Flex flexDirection={'column'} mt={'47px'}>
+           <FormLabel style={{ opacity: values.password ? 1 : 0 }} color={'#C0C0C0'} fontSize={'14px'} fontFamily={'Inter '} mt={'30px'} position={'absolute'} top={'54px'} fontWeight={'400'}>Пароль</FormLabel>
               <Field
-                type="password"
-                placeholder="password"
+                type={password ? 'text' : 'password'}
+                placeholder="Пароль"
                 name="password"
               ></Field>
-              {errors && <small>{errors.password}</small>}
-            </Box>
-            <Button type="submit">Submit</Button>
+                <Box width={'335px'} height={'0.5px'} bg={'#C0C0C0'}/>
+              {/* {errors && <small>{errors.password}</small>} */}
+            </Flex>
+            <Image  
+            onClick={()=> setPassword(!password)}
+            display={password ? 'none' : 'block'}
+            src={Eye} alt="eye password" width={'24px'} h={'24px'} ml={'-20px'} mt={'58px'} cursor={'pointer'}/>
+               <Image 
+            onClick={()=> setPassword(!password)}
+            display={password ? 'block' : 'none'}
+            src={EyeClose} alt="eye password" width={'24px'} h={'24px'} ml={'-20px'} mt={'58px'} cursor={'pointer'}/>
+           </Flex>
+           <ForgotPassword />
+            <Button type="submit" bg={'#5458EA'} width={'335px'} height={'44px'} color={'#fff'} fontFamily={'Inter, sans-serif'} borderRadius={'80px'} _hover={{bg: "#5458EA"}}>Войти</Button>
           </Form>
         )}
       </Formik>
-
       <Heading>{wrongMasseges && "неверный логин или пароль"}</Heading>
-      <ForgotPassword />
-    </Box>
+      <Heading color={'#5458EA'} fontSize={'14px'} fontFamily={'Inter, sans-serif'} mt={'196px'} lineHeight={'120%'} textAlign={'center'} cursor={'pointer'}  fontWeight={'500'}>Зарегистрироваться</Heading>
+     </Flex>
+
+
+    </Flex>
   );
 };
 
