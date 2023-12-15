@@ -14,7 +14,9 @@ const {access} = useSelector(s => s.accessToken)
           headers: {
             Authorization: `Bearer ${access}`,
           },
+        
         });
+        console.log(data);
       } catch (error) {
         if (error.response && error.response.status === 401) {
           try {
