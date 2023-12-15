@@ -15,16 +15,12 @@ const {access} = useSelector(s => s.accessToken)
             Authorization: `Bearer ${access}`,
           },
         });
-
-        console.log(data, 'name');
       } catch (error) {
         if (error.response && error.response.status === 401) {
           try {
             const refreshResponse = await axios.post('users/login/refresh/', {
               refresh: refresh,
             });
-
-          
 
             const retryResponse = await axios.get('users/me', {
               headers: {
