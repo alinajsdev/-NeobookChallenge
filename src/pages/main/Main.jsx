@@ -1,9 +1,11 @@
 import axios from 'axios'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
+
 
 const Main = () => {
-
+  const history = useNavigate();
 const {access} = useSelector(s => s.accessToken)
   const refresh = localStorage.getItem('refreshToken')
 
@@ -43,8 +45,17 @@ const {access} = useSelector(s => s.accessToken)
     fetchData();
   }, [access, refresh]);
 
+  useEffect(() => {
+    // Перенаправление на страницу входа
+    history('/login');
+  }, [history]);
+
+
+
   return (
-    <div>Main</div>
+    <div>
+      
+      Main</div>
   )
 }
 
