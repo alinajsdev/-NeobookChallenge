@@ -14,7 +14,7 @@ import { useFormik } from "formik";
 import { signUpFirst } from "./SignUpValidation";
 import Password from "./Password";
 import AuthBg from "../../components/AuthBg";
-import Arrow from "../../assets/images/arrow-left.png";
+import Arrow from "../../assets/images/arrowLeft.png";
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 

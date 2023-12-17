@@ -40,14 +40,12 @@ const Login = () => {
       });
 
       const { access, refresh } = res.data;
-
-      setAccessToken(access);
-      setRefreshToken(refresh);
+ 
       localStorage.setItem("refreshToken", refresh);
       dispatch(getAccess(access));
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
 
-      navigate("/");
+      navigate("/profile");
     } catch (error) {
       if (error.response && error.response.status >= 400) {
         return showToastMessage();

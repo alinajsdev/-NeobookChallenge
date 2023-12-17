@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800;900&display=swap');
+
+  .container {
+    display: grid;
+    grid-template-columns: 2fr 9fr;
+  }
+  
+  .tabs {
+    display: flex;
+    flex-direction: column;
+    width: 540px;
+    height: 100vh;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  .user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 0 42px;
+    
+  }
+  
+  .user--titles {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+  }
+  
+  .user--title {
+    color: #494949;
+    text-align: center;
+    font-family: "Inter";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 133.333% */
+    letter-spacing: -0.408px;
+  }
+  .user--name {
+    color: #494949;
+    text-align: center;
+    font-family: "Inter";
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px; /* 133.333% */
+    letter-spacing: -0.408px;
+  }
+  
+  .favorite {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 38px 38px 0 38px;
+    padding: 4px;
+  }
+  .favorite:hover {
+    background-color: #f7f6f9;
+    border-radius: 14px;
+    padding: 4px;
+    transition: 0.5s;
+  }
+  
+  .favorite--title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  
+  .favorite--name {
+    color: #494949;
+    font-family: "Inter";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px; /* 150% */
+    letter-spacing: -0.408px;
+  }
+  
+  .basket{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 38px 0 38px;
+      padding: 4px; 
+  }
+  .basket:hover{
+      background-color: #f7f6f9;
+      border-radius: 14px;
+      padding: 4px;
+      transition: 0.5s;
+  }
+  
+  .basket--title{
+      display: flex;
+      align-items: center;
+      gap: 9px;
+  }
+  
+  .basket--name{
+      color: #494949;
+      font-family: "Inter";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px; /* 150% */
+      letter-spacing: -0.408px;
+  }
+  
+  .exit{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 48px 38px 0 38px;
+      padding: 4px; 
+  }
+  .exit:hover{
+      background-color: #f7f6f9;
+      border-radius: 14px;
+      padding: 4px;
+      transition: 0.5s;
+  }
+  
+  .exit--title{
+      display: flex;
+      align-items: center;
+      gap: 9px;
+  }
+  .basket--name{
+      color: #494949;
+      font-family: "Inter";
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 24px; /* 150% */
+      letter-spacing: -0.408px;
+  }
+  
+  .tab--content {
+    background-color: #f7f6f9;
+  }
+  
+  
+    .tab--content .active {
+      display: block;
+    }
+    .tabs .active{
+      background-color: #f7f6f9;
+      border-radius: 14px;
+      padding: 4px;
+    }
