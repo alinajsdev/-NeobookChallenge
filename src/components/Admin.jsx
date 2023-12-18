@@ -9,16 +9,17 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 
-
 import { Link } from "react-router-dom";
 import photoDefault from "../assets/images/user.png";
 import Verify from "./VerifyPhone/Verify";
-import Exit from '../assets/images/arrowLeft.png'
-
+import Exit from "../assets/images/arrowLeft.png";
+import { useSelector } from "react-redux";
 
 const Admin = () => {
   const inputRef = useRef(null);
   const [image, setImage] = useState("");
+  const { isAuth } = useSelector((s) => s.isAuth);
+  const { userData } = useSelector((s) => s.userData);
 
   const handleImageClick = () => {
     inputRef?.current?.click();
@@ -27,12 +28,12 @@ const Admin = () => {
   const handleImageChange = (event) => {
     const selectedImage = event?.target?.files[0];
     setImage(selectedImage);
-    console.log(selectedImage);
+  
 
     // Save the selected image URL to local storage
     const imageURL = URL?.createObjectURL(selectedImage);
     localStorage.setItem("selectedImageURL", imageURL);
-    console.log(imageURL, "imageURL");
+
   };
 
   // Retrieve the saved image URL from local storage on component mount
@@ -56,12 +57,12 @@ const Admin = () => {
                 h="28px"
                 bg="rgba(192, 192, 192, 0.20)"
                 rounded="50px"
-                pl={'10px'}
+                pl={"10px"}
               >
-                <Image src={Exit} alt="exit"/>
+                <Image src={Exit} alt="exit" />
               </Box>
               <Heading
-                     fontFamily="Inter, sans-serif"
+                fontFamily="Inter, sans-serif"
                 fontSize="16px"
                 color="#000000"
               >
@@ -81,6 +82,8 @@ const Admin = () => {
         </Box>
 
         <Box
+          disabled={!isAuth}
+          style={{ opacity: isAuth === false ? "0.5" : "1" }}
           onClick={handleImageClick}
           cursor="pointer"
           mt="138px"
@@ -95,6 +98,7 @@ const Admin = () => {
             <Image src={photoDefault} w="80px" h="80px" />
           )}
           <input
+            disabled={!isAuth}
             type="file"
             onChange={handleImageChange}
             ref={inputRef}
@@ -110,9 +114,23 @@ const Admin = () => {
         </Box>
 
         <Box w="652px" bg="#FFF" rounded="12px" mt="32px" p="6px 16px ">
-          <Input type="text" placeholder="Имя" variant="flushed" />
-          <Input type="text" placeholder="Фамилия" variant="flushed" />
           <Input
+            disabled={!isAuth}
+            style={{ opacity: isAuth === false ? "0.5" : "1" }}
+            type="text"
+            placeholder="Имя"
+            variant="flushed"
+          />
+          <Input
+            disabled={!isAuth}
+            style={{ opacity: isAuth === false ? "0.5" : "1" }}
+            type="text"
+            placeholder="Фамилия"
+            variant="flushed"
+          />
+          <Input
+            disabled={!isAuth}
+            style={{ opacity: isAuth === false ? "0.5" : "1" }}
             type="text"
             placeholder="Дата рождения"
             variant="Unstyled"
@@ -127,7 +145,7 @@ const Admin = () => {
           >
             <Button
               onClick={() => setModal(true)}
-              transition='1s'
+              transition="1s"
               bg="transparent"
               _hover={{ background: "transparent" }}
               color="#5458EA"
@@ -136,7 +154,6 @@ const Admin = () => {
               fontFamily="Inter, sans-serif"
               letterSpacing="-0.408px"
               p="0"
-
             >
               Добавить номер
             </Button>
@@ -160,16 +177,32 @@ const Admin = () => {
             letterSpacing="-0.408px"
             fontWeight="600"
           >
-            nikitina.alesya@gmail.
+            {userData?.email}
           </Heading>
         </Box>
-        <Button ml={'28%'} fontSize={'16px'} fontFamily={'Inter, sans-serif'} fontWeight={'700'} color={'#fff'} mt={'50px'} padding={'10px'} w={'335px'} h={'44px'} borderRadius={'80px'} bg={'#5458EA'} _hover={{bg: "#5458EA"}}>Закончить регистрацию</Button>
+        <Button
+           onClick={() => setModal(true)}
+          ml={"28%"}
+          fontSize={"16px"}
+          fontFamily={"Inter, sans-serif"}
+          fontWeight={"700"}
+          color={"#fff"}
+          mt={"50px"}
+          padding={"10px"}
+          w={"335px"}
+          h={"44px"}
+          borderRadius={"80px"}
+          bg={"#5458EA"}
+          _hover={{ bg: "#5458EA" }}
+        >
+          Закончить регистрацию
+        </Button>
       </Container>
       <Box
         position="absolute"
         top={modal ? "31%" : "-800px"}
         zIndex="99"
-        left='30%'
+        left="30%"
         transition="1s"
       >
         <Verify setModal={setModal} modal={modal} />
