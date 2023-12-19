@@ -1,4 +1,13 @@
-import { Box, Button, HStack, Heading, Input, PinInput, PinInputField, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  Heading,
+  Input,
+  PinInput,
+  PinInputField,
+  Text,
+} from "@chakra-ui/react";
 import PhoneSvg from "../../assets/svg/PhoneSvg.jsx";
 import { useEffect, useState } from "react";
 import SmsSvg from "../../assets/svg/SmsSvg.jsx";
@@ -7,71 +16,38 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const Verify = ({ setModal, modal }) => {
-    
   const [phoneValue, setPhone] = useState("");
-  const { access } = useSelector((s) => s.accessToken);
-  const [sms, setSms] = useState(false);
-  const [send, setSend] = useState(false)
-  const [timer, setTimer] = useState(59)
-  const refresh = localStorage.getItem('refreshToken')
-  
-   console.log(refresh, access);
-    const submit = async() => {
-        try {
-            const res = await axios.put("users/add-phone/", phoneValue, {
-              headers: {
-                Authorization: `Bearer ${access}`,
-              },
-            });
-          
-            setSms(true);
-          } catch (error) {
-            if (error.response) {
-              // Если получена ошибка от сервера
-              if (error.response.status === 401) {
-                try {
-                  // Обновляем токен
-                  const refreshResponse = await axios.post("users/login/refresh/", {
-                    refresh: refresh,
-                  });
-                  
-                  localStorage.setItem('accessToken', refreshResponse.data.access)
-                  // Повторяем запрос с обновленным токеном
-                  const retryResponse = await axios.put("users/add-phone/", phoneValue, {
-                    headers: {
-                      Authorization: `Bearer ${refreshResponse.data.access}`,
-                    },
-                  });
-          
-                  console.log(retryResponse.data);
-                } catch (refreshError) {
-                  // Если не удалось обновить токен
-                  console.error("Error refreshing token:", refreshError);
-                  // Обработайте ошибку, как вам необходимо
-                }
-              } else {
-                // Обработка других ошибок от сервера
-                console.error("Server error:", error.response.status, error.response.data);
-                // Обработайте ошибку, как вам необходимо
-              }
-            } else {
-              // Обработка ошибок, не связанных с сервером
-              console.error("Request error:", error.message);
-              // Обработайте ошибку, как вам необходимо
-            }
-          }
-          
-    }
 
-  useEffect(()=>{
-    if(timer > 0){
-      setTimeout(() => {
-        setTimer( timer - 1)
-      }, 1000);
-    }else{
-      return setSend(true)
+  const [sms, setSms] = useState(false);
+  const [send, setSend] = useState(false);
+  const [timer, setTimer] = useState(59);
+  const refresh = localStorage.getItem("refreshToken");
+  const access = localStorage.getItem("accessToken");
+  console.log(phoneValue);
+  const submit = async () => {
+    try {
+      const { data } = await axios.put("users/add-phone/", phoneValue, {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+
+      setSms(true);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
     }
-  },[timer])
+  };
+
+  useEffect(() => {
+    if (timer > 0) {
+      setTimeout(() => {
+        setTimer(timer - 1);
+      }, 1000);
+    } else {
+      return setSend(true);
+    }
+  }, [timer]);
 
   return (
     <Box>
@@ -140,18 +116,16 @@ const Verify = ({ setModal, modal }) => {
             letterSpacing="2px"
             placeholder="0(000) 000 000"
             fontFamily="Inter, sans-serif"
-            
           />
         ) : (
-          <HStack my={'20px'}>
-              <PinInput>
-            <PinInputField />
-            <PinInputField />
-            <PinInputField />
-            <PinInputField />
-          </PinInput>
+          <HStack my={"20px"}>
+            <PinInput>
+              <PinInputField />
+              <PinInputField />
+              <PinInputField />
+              <PinInputField />
+            </PinInput>
           </HStack>
-       
         )}
         <Button
           onClick={submit}
@@ -168,30 +142,37 @@ const Verify = ({ setModal, modal }) => {
           Далее
         </Button>
 
-        {send ? 
-        <Button
-        bg='transparent'
-        _hover={{bg: "transparent"}}
-        color='#5458EA'
-        fontFamily='Inter, sans-serif'
-        fontSize='17px'
-        fontWeight='500'
-        letterSpacing='-0.408px'
-        >
-          Отправить код еще раз
-        </Button>  
-        :
-        <Box display={sms ? "flex"  :"none"}
-        flexDirection='column'
-        alignItems='center'
-       
-        >
-          <Text color='#C0C0C0' fontSize='16px' fontFamily='Inter, sans-serif' >Повторный запрос</Text>
-          <Box color='#C0C0C0' display='flex' alignItems='center' gap='10px'> <Loader timer={timer}/>  00:{timer}</Box>
-
-        </Box>
-      }
-
+        {send ? (
+          <Button
+            bg="transparent"
+            _hover={{ bg: "transparent" }}
+            color="#5458EA"
+            fontFamily="Inter, sans-serif"
+            fontSize="17px"
+            fontWeight="500"
+            letterSpacing="-0.408px"
+          >
+            Отправить код еще раз
+          </Button>
+        ) : (
+          <Box
+            display={sms ? "flex" : "none"}
+            flexDirection="column"
+            alignItems="center"
+          >
+            <Text
+              color="#C0C0C0"
+              fontSize="16px"
+              fontFamily="Inter, sans-serif"
+            >
+              Повторный запрос
+            </Text>
+            <Box color="#C0C0C0" display="flex" alignItems="center" gap="10px">
+              {" "}
+              <Loader timer={timer} /> 00:{timer}
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );

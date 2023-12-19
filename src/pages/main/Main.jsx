@@ -18,44 +18,32 @@ const Main = () => {
   const [tab, setTab] = useState(1);
   const [modal, setModal] = useState(false);
   const [data, setData] = useState(null);
-  const { access } = useSelector((s) => s.accessToken);
+ 
   const { isAuth } = useSelector((s) => s.isAuth);
   const dispatch = useDispatch();
   const refresh = localStorage.getItem("refreshToken");
-
+  const access = localStorage.getItem('accessToken')
+  console.log(access);
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await axios.get("users/me", {
-          headers: {
-            Authorization: `Bearer ${access}`,
-          },
-        });
-      } catch (error) {
-        if (error.response && error.response.status === 401) {
-          try {
-            const refreshResponse = await axios.post("users/login/refresh/", {
-              refresh: refresh,
-            });
-
-            const retryResponse = await axios.get("users/me", {
-              headers: {
-                Authorization: `Bearer ${refreshResponse.data.access}`,
-              },
-            });
-            dispatch(getUserData(retryResponse.data));
-            setData(retryResponse.data);
-          } catch (refreshError) {
-            // console.error(refreshError);
-          }
-        } else {
-          // console.error(error);
-        }
-      }
-    };
-
-    fetchData();
-  }, [access, refresh]);
+ (
+  async () => {
+    try {
+      const {data} = await axios.get("users/me", {
+        headers: {
+          Authorization: `Bearer ${access}`,
+        },
+      });
+      setData(data)
+      dispatch(getUserData(data))
+      console.log(data);
+    } catch (error) {
+  
+    }
+  }
+ )()
+   
+    
+  }, []);
 
   return (
     <>

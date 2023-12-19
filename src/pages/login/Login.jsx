@@ -40,10 +40,11 @@ const Login = () => {
       });
 
       const { access, refresh } = res.data;
-      console.log(access);
+      // console.log(access);
       localStorage.setItem("refreshToken", refresh);
       dispatch(getAccess(access));
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
+      console.log(access, 'access');
 
       navigate("/profile");
     } catch (error) {
