@@ -11,15 +11,13 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 
 const ForgotPassword = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [scrollBehavior, setScrollBehavior] = React.useState("inside");
   const [phone, setPhone] = useState("");
-  const { access } = useSelector((s) => s.accessToken);
   const btnRef = React.useRef(null);
-
+  const access = localStorage.getItem('accessToken')
   const submit = async (e) => {
     e.preventDefault();
     try {

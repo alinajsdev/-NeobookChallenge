@@ -3,13 +3,17 @@ import axios from "axios";
 axios.defaults.baseURL = "https://neobook.online/mobi-market/";
 
 const refresh = localStorage.getItem("refreshToken");
+
 async function refreshAuthToken() {
   try {
     const response = await axios.post("users/login/refresh/", refresh);
+  
     if (response.status === 200) {
-      const newToken = response.data["access"];
+   
+      const newToken = response.data["token"];
       axios.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
       return true;
+
     }
   } catch (error) {
     console.error("Failed to refresh auth token:", error);

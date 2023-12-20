@@ -21,7 +21,6 @@ const Main = () => {
  
   const { isAuth } = useSelector((s) => s.isAuth);
   const dispatch = useDispatch();
-  const refresh = localStorage.getItem("refreshToken");
   const access = localStorage.getItem('accessToken')
   console.log(access);
   useEffect(() => {

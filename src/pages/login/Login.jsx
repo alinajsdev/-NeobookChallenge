@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
-import { getAccess } from "../../store/reducers/access";
 import ForgotPassword from "./ForgotPassword";
 import { loginValidation } from "./LoginValidation";
 
@@ -27,11 +26,6 @@ const Login = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState(false);
 
-  // eslint-disable-next-line no-unused-vars
-  const [accessToken, setAccessToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
-  const dispatch = useDispatch();
-
   const submit = async (username, password) => {
     try {
       const res = await axios.post(`users/login/`, {
@@ -42,9 +36,9 @@ const Login = () => {
       const { access, refresh } = res.data;
       // console.log(access);
       localStorage.setItem("refreshToken", refresh);
-      dispatch(getAccess(access));
+      localStorage.setItem('accessToken', access)
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
-      console.log(access, 'access');
+
 
       navigate("/profile");
     } catch (error) {

@@ -13,7 +13,6 @@ import { useEffect, useState } from "react";
 import SmsSvg from "../../assets/svg/SmsSvg.jsx";
 import Loader from "./loader/Loader.jsx";
 import axios from "axios";
-import { useSelector } from "react-redux";
 
 const Verify = ({ setModal, modal }) => {
   const [phoneValue, setPhone] = useState("");
@@ -21,23 +20,50 @@ const Verify = ({ setModal, modal }) => {
   const [sms, setSms] = useState(false);
   const [send, setSend] = useState(false);
   const [timer, setTimer] = useState(59);
-  const refresh = localStorage.getItem("refreshToken");
   const access = localStorage.getItem("accessToken");
-  console.log(phoneValue);
   const submit = async () => {
     try {
-      const { data } = await axios.put("users/add-phone/", phoneValue, {
+      const { data } = await axios.put("users/add-phone/", {phone : phoneValue}, {
         headers: {
           Authorization: `Bearer ${access}`,
         },
       });
-
+      console.log(data, 'verify');
       setSms(true);
-      console.log(data);
+
     } catch (error) {
-      console.log(error);
+      return error
     }
   };
+
+  const [pin, setPin] = useState(['', '', '', '']);
+
+  const handlePinChange = (index, value) => {
+    const newPin = [...pin];
+    newPin[index] = value;
+    setPin(newPin);
+
+    // Проверка, является ли текущее поле последним
+    if (index === newPin.length - 1 && value !== '') {
+      const pinValue = newPin.join('');
+      sendPinToBackend(pinValue);
+    }
+  };
+
+  const sendPinToBackend = (pinValue) => {
+    axios.post('users/verify-phone/', { code: pinValue }, {
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    })
+      .then(response => {
+        console.log(response.data, 'verifyCode');
+      })
+      .catch(error => {
+        // Обработка ошибки
+      });
+  };
+
 
   useEffect(() => {
     if (timer > 0) {
@@ -119,12 +145,15 @@ const Verify = ({ setModal, modal }) => {
           />
         ) : (
           <HStack my={"20px"}>
-            <PinInput>
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-              <PinInputField />
-            </PinInput>
+  <PinInput>
+      {pin.map((value, index) => (
+        <PinInputField
+          key={index}
+          value={value}
+          onChange={(e) => handlePinChange(index, e.target.value)}
+        />
+      ))}
+    </PinInput>
           </HStack>
         )}
         <Button
