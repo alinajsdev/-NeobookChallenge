@@ -19,8 +19,8 @@ const Verify = ({ setModal, modal }) => {
   const [sms, setSms] = useState(false);
   const [send, setSend] = useState(false);
   const [timer, setTimer] = useState(59);
-  const [errorPhone, setErrorPhone] = useState(false)
-  const [code, setCode] = useState(false)
+  const [errorPhone, setErrorPhone] = useState(false);
+  const [code, setCode] = useState(false);
 
   // оброботка phoneValue
 
@@ -43,9 +43,8 @@ const Verify = ({ setModal, modal }) => {
       setSms(true);
     } catch (error) {
       if (error.response && error.response.status >= 400) {
-        return  setErrorPhone(true)
+        return setErrorPhone(true);
       }
-     
     }
   };
 
@@ -76,13 +75,12 @@ const Verify = ({ setModal, modal }) => {
         }
       )
       .then((response) => {
-        setModal(false)
+        setModal(false);
       })
 
-     
       .catch((error) => {
         if (error.response && error.response.status >= 400) {
-          return  setCode(true)
+          return setCode(true);
         }
       });
   };
@@ -160,9 +158,8 @@ const Verify = ({ setModal, modal }) => {
           >
             Мы отправим вам СМС с кодом подтверждения
           </Text>
-   <Flex flexDirection={'column'} textAlign={'start'} >
-
-   <InputMask
+          <Flex flexDirection={"column"} textAlign={"start"}>
+            <InputMask
               mask="0(999) 999 999"
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
@@ -177,23 +174,32 @@ const Verify = ({ setModal, modal }) => {
               placeholderTextColor="#A0A0A0" // Цвет placeholder'а
               fontFamily="Inter, sans-serif"
             />
-            {errorPhone && <small style={{color: "red", marginBottom:"10px" , textAlign:"start"}}>Данный номер уже зарегистрирован</small> }
-   </Flex>
-           
-            <Button
-             onClick={submit}
-              w="335px"
-              h="65px"
-              bg="#5458EA"
-              rounded="16px"
-              color="#FFF"
-              fontSize="16px"
-              fontFamily="Inter, sans-serif"
-              _hover={{ bg: "#5458EA" }}
-            >
-              Далее
-            </Button>
-         
+            {errorPhone && (
+              <small
+                style={{
+                  color: "red",
+                  marginBottom: "10px",
+                  textAlign: "start",
+                }}
+              >
+                Данный номер уже зарегистрирован
+              </small>
+            )}
+          </Flex>
+
+          <Button
+            onClick={submit}
+            w="335px"
+            h="65px"
+            bg="#5458EA"
+            rounded="16px"
+            color="#FFF"
+            fontSize="16px"
+            fontFamily="Inter, sans-serif"
+            _hover={{ bg: "#5458EA" }}
+          >
+            Далее
+          </Button>
         </Box>
 
         {/* second form  */}
@@ -231,7 +237,13 @@ const Verify = ({ setModal, modal }) => {
               ))}
             </PinInput>
           </HStack>
-          {code && <small style={{color: "red", marginBottom:"10px" , textAlign:"start"}}>Неверный код</small> }
+          {code && (
+            <small
+              style={{ color: "red", marginBottom: "10px", textAlign: "start" }}
+            >
+              Неверный код
+            </small>
+          )}
           {send ? (
             <Button
               bg="transparent"

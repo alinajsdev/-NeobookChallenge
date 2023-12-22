@@ -28,12 +28,10 @@ const Admin = () => {
   const handleImageChange = (event) => {
     const selectedImage = event?.target?.files[0];
     setImage(selectedImage);
-  
 
     // Save the selected image URL to local storage
     const imageURL = URL?.createObjectURL(selectedImage);
     localStorage.setItem("selectedImageURL", imageURL);
-
   };
 
   // Retrieve the saved image URL from local storage on component mount
@@ -181,7 +179,7 @@ const Admin = () => {
           </Heading>
         </Box>
         <Button
-           onClick={() => setModal(true)}
+          onClick={() => setModal(true)}
           ml={"28%"}
           fontSize={"16px"}
           fontFamily={"Inter, sans-serif"}
