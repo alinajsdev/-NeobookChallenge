@@ -15,7 +15,7 @@ import Loader from "./loader/Loader.jsx";
 import axios from "axios";
 import InputMask from "react-input-mask";
 
-const Verify = ({ setModal, modal }) => {
+const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
   const [sms, setSms] = useState(false);
   const [send, setSend] = useState(false);
   const [timer, setTimer] = useState(59);
@@ -76,6 +76,8 @@ const Verify = ({ setModal, modal }) => {
       )
       .then((response) => {
         setModal(false);
+        setIsEditing(true)
+        setCloseBtn(true)
       })
 
       .catch((error) => {

@@ -14,12 +14,36 @@ import photoDefault from "../assets/images/user.png";
 import Verify from "./VerifyPhone/Verify";
 import Exit from "../assets/images/arrowLeft.png";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 const Admin = () => {
+  const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);
   const [image, setImage] = useState("");
   const { isAuth } = useSelector((s) => s.isAuth);
   const { userData } = useSelector((s) => s.userData);
+  const [first_name, setName] = useState("");
+  const [last_name, setLastNmae] = useState("");
+  const [username, setUsername] = useState("");
+  const [birth_date, setBirthDate] = useState("");
+
+  const [email, setEmail] = useState("");
+  const [closeBtn, setCloseBtn] = useState(false);
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setBirthDate(value);
+  };
+
+  const formatInput = () => {
+    // Проверяем, что введено достаточно символов для формата YYYY.MM.DD
+    if (birth_date.length === 4) {
+      setBirthDate(birth_date + ".");
+    } else if (birth_date.length === 7) {
+      setBirthDate(birth_date + ".");
+    }
+  };
+
 
   const handleImageClick = () => {
     inputRef?.current?.click();
@@ -43,7 +67,35 @@ const Admin = () => {
   }, []);
 
   const [modal, setModal] = useState(false);
-
+  console.log(userData);
+  const access = localStorage.getItem("accessToken");
+  const fetchUpdate = async () => {
+    try {
+      const res = await axios.put(
+        "users/profile/update/",
+        {
+          first_name: first_name,
+          last_name: last_name,
+          username: username,
+          birth_date: birth_date,
+          email: email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${access}`,
+          },
+        }
+      );
+      console.log(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  const submit = (e) => {
+    e.preventDefault();
+    setIsEditing(!isEditing);
+    isEditing && fetchUpdate();
+  };
   return (
     <Box>
       <Container maxW="636px">
@@ -80,7 +132,6 @@ const Admin = () => {
         </Box>
 
         <Box
-          disabled={!isAuth}
           style={{ opacity: isAuth === false ? "0.5" : "1" }}
           onClick={handleImageClick}
           cursor="pointer"
@@ -96,7 +147,6 @@ const Admin = () => {
             <Image src={photoDefault} w="80px" h="80px" />
           )}
           <input
-            disabled={!isAuth}
             type="file"
             onChange={handleImageChange}
             ref={inputRef}
@@ -110,76 +160,136 @@ const Admin = () => {
             Выбрать фотографию
           </Button>
         </Box>
-
-        <Box w="652px" bg="#FFF" rounded="12px" mt="32px" p="6px 16px ">
-          <Input
-            disabled={!isAuth}
-            style={{ opacity: isAuth === false ? "0.5" : "1" }}
+        <form onSubmit={submit}>
+          <Box w="652px" bg="#FFF" rounded="12px" mt="32px" p="6px 16px ">
+            {isEditing ? (
+              <Input
+                required
+                onChange={(e) => setName(e.target.value)}
+                value={first_name}
+                type="text"
+                placeholder="Имя"
+                variant="flushed"
+              />
+            ) : (
+              <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
+                name
+              </Heading>
+            )}
+            {isEditing ? (
+              <Input
+                required
+                onChange={(e) => setLastNmae(e.target.value)}
+                value={last_name}
+                type="text"
+                placeholder="Фамилия"
+                variant="flushed"
+              />
+            ) : (
+              <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
+                Last Name
+              </Heading>
+            )}
+            {isEditing ? (
+              <Input
+                required
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                type="text"
+                placeholder="username"
+                variant="flushed"
+              />
+            ) : (
+              <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
+                {userData?.username}
+              </Heading>
+            )}
+            {isEditing ? (
+            <input
             type="text"
-            placeholder="Имя"
-            variant="flushed"
+            placeholder="YYYY.MM.DD"
+            value={birth_date}
+            onChange={handleInputChange}
+            onBlur={formatInput}  // Форматируем при потере фокуса
           />
-          <Input
-            disabled={!isAuth}
-            style={{ opacity: isAuth === false ? "0.5" : "1" }}
-            type="text"
-            placeholder="Фамилия"
-            variant="flushed"
-          />
-          <Input
-            disabled={!isAuth}
-            style={{ opacity: isAuth === false ? "0.5" : "1" }}
-            type="text"
-            placeholder="Дата рождения"
-            variant="Unstyled"
-            padding="0"
-          />
-        </Box>
-        <Box w="652px" bg="#FFF" rounded="12px" mt="12px" p="6px 16px ">
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Button
-              onClick={() => setModal(true)}
-              transition="1s"
-              bg="transparent"
-              _hover={{ background: "transparent" }}
-              color="#5458EA"
-              fontSize="16px"
-              lineHeight="24px"
-              fontFamily="Inter, sans-serif"
-              letterSpacing="-0.408px"
-              p="0"
-            >
-              Добавить номер
-            </Button>
-
-            <Text
-              color="#C0C0C0"
-              fontFamily="Inter, sans-serif"
-              fontSize="16px"
-              lineHeight="24px"
-              letterSpacing="-0.408px"
-            >
-              0(000) 000 000
-            </Text>
+            ) : (
+              <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
+                15.11.2005
+              </Heading>
+            )}
           </Box>
-          <Heading
-            mt="6px"
-            color="#000"
-            fontFamily="Inter, sans-serif"
-            fontSize="16px"
-            lineHeight="24px"
-            letterSpacing="-0.408px"
-            fontWeight="600"
+          <Box w="652px" bg="#FFF" rounded="12px" mt="12px" p="6px 16px ">
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              <Button
+                onClick={() => !isEditing && setModal(true)}
+                transition="1s"
+                bg="transparent"
+                _hover={{ background: "transparent" }}
+                color="#5458EA"
+                fontSize="16px"
+                lineHeight="24px"
+                fontFamily="Inter, sans-serif"
+                letterSpacing="-0.408px"
+                p="0"
+              >
+                Добавить номер
+              </Button>
+
+              <Text
+                color="#C0C0C0"
+                fontFamily="Inter, sans-serif"
+                fontSize="16px"
+                lineHeight="24px"
+                letterSpacing="-0.408px"
+              >
+                0(000) 000 000
+              </Text>
+            </Box>
+            {isEditing ? (
+              <Input
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+                variant="Unstyled"
+                padding="0"
+              />
+            ) : (
+              <Heading
+                mt="6px"
+                color="#000"
+                fontFamily="Inter, sans-serif"
+                fontSize="16px"
+                lineHeight="24px"
+                letterSpacing="-0.408px"
+                fontWeight="600"
+              >
+                {userData?.email}
+              </Heading>
+            )}
+          </Box>
+          <Button
+            type="submit"
+            display={closeBtn ? "block" : "none"}
+            pos={"absolute"}
+            top={"12px"}
+            right={"95px"}
+            borderRadius={"50px"}
+            bg={"rgba(192, 192, 192, 0.20)"}
+            h={"28px"}
+            fontFamily={"Inter,sans-serif"}
           >
-            {userData?.email}
-          </Heading>
-        </Box>
+            {isEditing ? " Готово" : "Изм"}
+          </Button>
+        </form>
         <Button
           onClick={() => setModal(true)}
+          display={closeBtn ? "none" : "block"}
           ml={"28%"}
           fontSize={"16px"}
           fontFamily={"Inter, sans-serif"}
@@ -203,7 +313,12 @@ const Admin = () => {
         left="30%"
         transition="1s"
       >
-        <Verify setModal={setModal} modal={modal} />
+        <Verify
+          setModal={setModal}
+          modal={modal}
+          setIsEditing={setIsEditing}
+          setCloseBtn={setCloseBtn}
+        />
       </Box>
     </Box>
   );
