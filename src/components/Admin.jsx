@@ -20,6 +20,7 @@ import { Toaster, toast } from "sonner";
 
 import { getUserData } from "../store/reducers/userData";
 import { getUserUpdate } from "../store/reducers/isUpdate";
+import { getIsAuth } from "../store/reducers/isAuth";
 
 
 const Admin = () => {
@@ -107,6 +108,7 @@ const Admin = () => {
     
       localStorage.setItem('isEditing', JSON.stringify(false))
       localStorage.setItem('isAuth', JSON.stringify(true))
+      dispatch(getIsAuth(true))
       showToastSuccess()
 
     dispatch(getUserUpdate(true))

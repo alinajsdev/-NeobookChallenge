@@ -18,7 +18,7 @@ const Main = () => {
   const [tab, setTab] = useState(1);
   const [modal, setModal] = useState(false);
   const [data, setData] = useState(null);
- 
+ const isAuth = JSON.parse(localStorage.getItem('isAuth'))
 
   const dispatch = useDispatch();
   const access = localStorage.getItem('accessToken')
@@ -41,8 +41,7 @@ const Main = () => {
     }
   }
  )()
-   
-    
+  
   }, [isUpdate]);
 
   return (
@@ -63,6 +62,8 @@ const Main = () => {
           </div>
 
           <button
+          disabled={!isAuth}
+          style={{opacity: !isAuth ? "0.5" : "1"}}
             className="favorite"
             onClick={() => setTab(2)}
           >
@@ -74,7 +75,8 @@ const Main = () => {
           </button>
 
           <button
-       
+        disabled={!isAuth}
+        style={{opacity: !isAuth ? "0.5" : "1"}}
             className="basket"
             onClick={() => setTab(3)}
           >
