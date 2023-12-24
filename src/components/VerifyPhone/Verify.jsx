@@ -15,12 +15,13 @@ import Loader from "./loader/Loader.jsx";
 import axios from "axios";
 import InputMask from "react-input-mask";
 
-const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
+const Verify = ({ setModal, modal }) => {
   const [sms, setSms] = useState(false);
   const [send, setSend] = useState(false);
   const [timer, setTimer] = useState(59);
   const [errorPhone, setErrorPhone] = useState(false);
   const [code, setCode] = useState(false);
+ 
 
   // оброботка phoneValue
 
@@ -76,8 +77,9 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
       )
       .then((response) => {
         setModal(false);
-        setIsEditing(true)
-        setCloseBtn(true)
+      
+        localStorage.setItem('isEditing', JSON.stringify(true))
+        localStorage.setItem('closeBtn', JSON.stringify(true))
       })
 
       .catch((error) => {
@@ -135,7 +137,7 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
             fontSize="24px"
             fontFamily="Inter, sans-serif"
             fontWeight="700"
-            lineHeight="120%"
+            
           >
             Введите номер телефона
           </Heading>
@@ -154,7 +156,7 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
             fontFamily="Inter, sans-serif"
             fontSize="16px"
             fontWeight="400"
-            lineHeight="120%"
+          
             textAlign="center"
             w="335px"
           >
@@ -170,10 +172,10 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
               mb="54px"
               color="#494949"
               fontSize="32px" // Увеличиваем размер шрифта
-              lineHeight="34px"
+              
               letterSpacing="2px"
               placeholder="номер"
-              placeholderTextColor="#A0A0A0" // Цвет placeholder'а
+             
               fontFamily="Inter, sans-serif"
             />
             {errorPhone && (
@@ -216,7 +218,7 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
             fontSize="24px"
             fontFamily="Inter, sans-serif"
             fontWeight="700"
-            lineHeight="120%"
+            
           >
             Изменить номер телефона
           </Heading>
@@ -233,7 +235,7 @@ const Verify = ({ setModal, modal , setIsEditing, setCloseBtn}) => {
               {pin.map((value, index) => (
                 <PinInputField
                   key={index}
-                  value={value}
+                  defaultValue={value}
                   onChange={(e) => handlePinChange(index, e.target.value)}
                 />
               ))}

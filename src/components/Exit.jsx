@@ -35,7 +35,7 @@ const Exit = ({ modal, setModal }) => {
         <Text
           color="#292929"
           fontSize="18px"
-          lineHeight="120%"
+         
           fontFamily="Inter, sans-serif"
           w="303px "
           mt="14px"

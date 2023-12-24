@@ -13,37 +13,30 @@ import { Link } from "react-router-dom";
 import photoDefault from "../assets/images/user.png";
 import Verify from "./VerifyPhone/Verify";
 import Exit from "../assets/images/arrowLeft.png";
-import { useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import "react-toastify/dist/ReactToastify.css";
+import { Toaster, toast } from "sonner";
+
+import { getUserData } from "../store/reducers/userData";
+import { getUserUpdate } from "../store/reducers/isUpdate";
+
 
 const Admin = () => {
-  const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef(null);
   const [image, setImage] = useState("");
-  const { isAuth } = useSelector((s) => s.isAuth);
   const { userData } = useSelector((s) => s.userData);
   const [first_name, setName] = useState("");
   const [last_name, setLastNmae] = useState("");
   const [username, setUsername] = useState("");
   const [birth_date, setBirthDate] = useState("");
-
   const [email, setEmail] = useState("");
-  const [closeBtn, setCloseBtn] = useState(false);
-
-  const handleInputChange = (e) => {
-    const value = e.target.value;
-    setBirthDate(value);
-  };
-
-  const formatInput = () => {
-    // Проверяем, что введено достаточно символов для формата YYYY.MM.DD
-    if (birth_date.length === 4) {
-      setBirthDate(birth_date + ".");
-    } else if (birth_date.length === 7) {
-      setBirthDate(birth_date + ".");
-    }
-  };
-
+  const access = localStorage.getItem("accessToken");
+  const closeBtn = localStorage.getItem('closeBtn')
+  const isEditing = JSON.parse(localStorage.getItem('isEditing'));
+  const dispatch = useDispatch()
+  const [buttonClicked, setButtonClicked] = useState(false);
+  const [changeBtn, setChangeBtn] =useState (false)
 
   const handleImageClick = () => {
     inputRef?.current?.click();
@@ -64,20 +57,45 @@ const Admin = () => {
     if (imageURL) {
       setImage(imageURL);
     }
+
   }, []);
 
+
+
   const [modal, setModal] = useState(false);
-  console.log(userData);
-  const access = localStorage.getItem("accessToken");
+  useEffect(() => {
+    // Ваш код для обработки эффекта
+    if (buttonClicked) {
+      (
+        async () => {
+          try {
+            const {data} = await axios.get("users/me", {
+              headers: {
+                Authorization: `Bearer ${access}`,
+              },
+            });
+         
+            dispatch(getUserData(data))
+          } catch (error) {
+        
+          }
+        }
+       )()
+    }
+    // Сбрасываем флаг после обработки
+    setButtonClicked(false);
+  }, [buttonClicked]);
+
+
   const fetchUpdate = async () => {
     try {
-      const res = await axios.put(
+       await axios.put(
         "users/profile/update/",
         {
           first_name: first_name,
           last_name: last_name,
           username: username,
-          birth_date: birth_date,
+          // birth_date: birth_date,
           email: email,
         },
         {
@@ -86,19 +104,53 @@ const Admin = () => {
           },
         }
       );
-      console.log(res.data);
-    } catch (e) {
-      console.log(e);
+    
+      localStorage.setItem('isEditing', JSON.stringify(false))
+      localStorage.setItem('isAuth', JSON.stringify(true))
+      showToastSuccess()
+
+    dispatch(getUserUpdate(true))
+    setButtonClicked(true);
+    setChangeBtn(!changeBtn)
+        
+    } catch (error) {
+      console.log(error);
+      if (error.response.data?.error?.email && error.response.status >= 400) {
+
+        return showToastMessage();
+        
+      }else if( error.response.data?.error?.username && error.response.status >= 400) {
+        return showToastUsername()
+      }
     }
   };
+  
   const submit = (e) => {
     e.preventDefault();
-    setIsEditing(!isEditing);
+
     isEditing && fetchUpdate();
+  };
+
+  const showToastMessage = () => {
+    toast.error("user with this email already exists.", {
+      position: "top-right",
+    });
+  };
+
+  const showToastUsername = () => {
+    toast.error("user with this username already exists.", {
+      position: "top-right",
+    });
+  };
+  const showToastSuccess = () => {
+    toast.success("Данные успешно изменены.", {
+      position: "top-right",
+    });
   };
   return (
     <Box>
       <Container maxW="636px">
+      <Toaster richColors />
         <Box display="flex" alignItems="center" mt="15px" gap="175px">
           <Link to={"/"}>
             <Box display="flex" gap="6px" alignItems="center" cursor="pointer">
@@ -132,7 +184,7 @@ const Admin = () => {
         </Box>
 
         <Box
-          style={{ opacity: isAuth === false ? "0.5" : "1" }}
+         
           onClick={handleImageClick}
           cursor="pointer"
           mt="138px"
@@ -166,35 +218,35 @@ const Admin = () => {
               <Input
                 required
                 onChange={(e) => setName(e.target.value)}
-                value={first_name}
+                defaultValue={first_name}
                 type="text"
                 placeholder="Имя"
                 variant="flushed"
               />
             ) : (
               <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
-                name
+                {userData?.first_name ? userData?.first_name  : 'имя'}
               </Heading>
             )}
             {isEditing ? (
               <Input
                 required
                 onChange={(e) => setLastNmae(e.target.value)}
-                value={last_name}
+                defaultValue={last_name}
                 type="text"
                 placeholder="Фамилия"
                 variant="flushed"
               />
             ) : (
               <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
-                Last Name
+                {userData?.last_name ? userData?.last_name : "Фамилия"}
               </Heading>
             )}
             {isEditing ? (
               <Input
                 required
                 onChange={(e) => setUsername(e.target.value)}
-                value={username}
+                defaultValue={username}
                 type="text"
                 placeholder="username"
                 variant="flushed"
@@ -205,13 +257,15 @@ const Admin = () => {
               </Heading>
             )}
             {isEditing ? (
-            <input
-            type="text"
-            placeholder="YYYY.MM.DD"
-            value={birth_date}
-            onChange={handleInputChange}
-            onBlur={formatInput}  // Форматируем при потере фокуса
-          />
+              <Input
+                onChange={(e) => setBirthDate(e.target.value)}
+                defaultValue={birth_date}
+                variant="Unstyled"
+                padding="0"
+                size="md"
+                type="date"
+              />
+         
             ) : (
               <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
                 15.11.2005
@@ -226,12 +280,13 @@ const Admin = () => {
             >
               <Button
                 onClick={() => !isEditing && setModal(true)}
+           
                 transition="1s"
                 bg="transparent"
                 _hover={{ background: "transparent" }}
                 color="#5458EA"
                 fontSize="16px"
-                lineHeight="24px"
+               
                 fontFamily="Inter, sans-serif"
                 letterSpacing="-0.408px"
                 p="0"
@@ -243,16 +298,16 @@ const Admin = () => {
                 color="#C0C0C0"
                 fontFamily="Inter, sans-serif"
                 fontSize="16px"
-                lineHeight="24px"
+              
                 letterSpacing="-0.408px"
               >
-                0(000) 000 000
+                {userData?.phone}
               </Text>
             </Box>
             {isEditing ? (
               <Input
                 required
-                value={email}
+                defaultValue={email}
                 onChange={(e) => setEmail(e.target.value)}
                 type="email"
                 placeholder="Email"
@@ -265,7 +320,7 @@ const Admin = () => {
                 color="#000"
                 fontFamily="Inter, sans-serif"
                 fontSize="16px"
-                lineHeight="24px"
+            
                 letterSpacing="-0.408px"
                 fontWeight="600"
               >
@@ -273,7 +328,8 @@ const Admin = () => {
               </Heading>
             )}
           </Box>
-          <Button
+          <Box display={changeBtn ? 'none' : "block"}>
+              <Button
             type="submit"
             display={closeBtn ? "block" : "none"}
             pos={"absolute"}
@@ -284,7 +340,24 @@ const Admin = () => {
             h={"28px"}
             fontFamily={"Inter,sans-serif"}
           >
-            {isEditing ? " Готово" : "Изм"}
+       Готово
+          </Button>
+          </Box>
+          <Button
+            onClick={()=> {
+              localStorage.setItem('isEditing', JSON.stringify(true))
+              setChangeBtn(!changeBtn)
+            }}
+            display={changeBtn ? "block" : "none"}
+            pos={"absolute"}
+            top={"12px"}
+            right={"95px"}
+            borderRadius={"50px"}
+            bg={"rgba(192, 192, 192, 0.20)"}
+            h={"28px"}
+            fontFamily={"Inter,sans-serif"}
+          >
+       изм
           </Button>
         </form>
         <Button
@@ -316,8 +389,7 @@ const Admin = () => {
         <Verify
           setModal={setModal}
           modal={modal}
-          setIsEditing={setIsEditing}
-          setCloseBtn={setCloseBtn}
+          
         />
       </Box>
     </Box>

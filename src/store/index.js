@@ -1,11 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import isAuthSlice from "./reducers/isAuth";
 import userDataSlice from "./reducers/userData";
+import isUpadetSlice  from "./reducers/isUpdate";
 
 export const store = configureStore({
   reducer: {
 
-    isAuth: isAuthSlice,
+
     userData: userDataSlice,
+    isUpdate : isUpadetSlice
   },
 });

@@ -18,7 +18,7 @@ const SmsSvg = () => {
           height="78"
           rx="19"
           stroke="url(#paint0_linear_71_14666)"
-          stroke-width="2"
+          strokeWidth="2"
         />
       </g>
       <rect x="7.5" y="9.5" width="80" height="80" rx="20" fill="#5458EA" />

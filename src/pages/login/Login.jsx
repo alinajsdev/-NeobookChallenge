@@ -11,7 +11,6 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -188,7 +187,7 @@ const Login = () => {
             fontSize={"14px"}
             fontFamily={"Inter, sans-serif"}
             mt={"196px"}
-            lineHeight={"120%"}
+            
             textAlign={"center"}
             cursor={"pointer"}
             fontWeight={"500"}

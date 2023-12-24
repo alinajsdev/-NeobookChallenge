@@ -19,10 +19,11 @@ const Main = () => {
   const [modal, setModal] = useState(false);
   const [data, setData] = useState(null);
  
-  const { isAuth } = useSelector((s) => s.isAuth);
+
   const dispatch = useDispatch();
   const access = localStorage.getItem('accessToken')
-  console.log(access);
+ const {isUpdate } = useSelector(s => s.isUpdate)
+
   useEffect(() => {
  (
   async () => {
@@ -34,7 +35,7 @@ const Main = () => {
       });
       setData(data)
       dispatch(getUserData(data))
-      console.log(data);
+    
     } catch (error) {
   
     }
@@ -42,7 +43,7 @@ const Main = () => {
  )()
    
     
-  }, []);
+  }, [isUpdate]);
 
   return (
     <>
@@ -62,8 +63,6 @@ const Main = () => {
           </div>
 
           <button
-            disabled={!isAuth}
-            style={{ opacity: isAuth === false ? "0.5" : "1" }}
             className="favorite"
             onClick={() => setTab(2)}
           >
@@ -75,8 +74,7 @@ const Main = () => {
           </button>
 
           <button
-            disabled={!isAuth}
-            style={{ opacity: isAuth === false ? "0.5" : "1" }}
+       
             className="basket"
             onClick={() => setTab(3)}
           >
