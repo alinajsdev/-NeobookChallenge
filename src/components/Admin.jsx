@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import photoDefault from "../assets/images/user.png";
 import Verify from "./VerifyPhone/Verify";
 import Exit from "../assets/images/arrowLeft.png";
-import {  useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { Toaster, toast } from "sonner";
@@ -21,7 +21,6 @@ import { Toaster, toast } from "sonner";
 import { getUserData } from "../store/reducers/userData";
 import { getUserUpdate } from "../store/reducers/isUpdate";
 import { getIsAuth } from "../store/reducers/isAuth";
-
 
 const Admin = () => {
   const inputRef = useRef(null);
@@ -33,11 +32,11 @@ const Admin = () => {
   const [birth_date, setBirthDate] = useState("");
   const [email, setEmail] = useState("");
   const access = localStorage.getItem("accessToken");
-  const closeBtn = localStorage.getItem('closeBtn')
-  const isEditing = JSON.parse(localStorage.getItem('isEditing'));
-  const dispatch = useDispatch()
+  const closeBtn = localStorage.getItem("closeBtn");
+  const isEditing = JSON.parse(localStorage.getItem("isEditing"));
+  const dispatch = useDispatch();
   const [buttonClicked, setButtonClicked] = useState(false);
-  const [changeBtn, setChangeBtn] =useState (false)
+  const [changeBtn, setChangeBtn] = useState(false);
 
   const handleImageClick = () => {
     inputRef?.current?.click();
@@ -58,39 +57,31 @@ const Admin = () => {
     if (imageURL) {
       setImage(imageURL);
     }
-
   }, []);
-
-
 
   const [modal, setModal] = useState(false);
   useEffect(() => {
     // Ваш код для обработки эффекта
     if (buttonClicked) {
-      (
-        async () => {
-          try {
-            const {data} = await axios.get("users/me", {
-              headers: {
-                Authorization: `Bearer ${access}`,
-              },
-            });
-         
-            dispatch(getUserData(data))
-          } catch (error) {
-        
-          }
-        }
-       )()
+      (async () => {
+        try {
+          const { data } = await axios.get("users/me", {
+            headers: {
+              Authorization: `Bearer ${access}`,
+            },
+          });
+
+          dispatch(getUserData(data));
+        } catch (error) {}
+      })();
     }
     // Сбрасываем флаг после обработки
     setButtonClicked(false);
   }, [buttonClicked]);
 
-
   const fetchUpdate = async () => {
     try {
-       await axios.put(
+      await axios.put(
         "users/profile/update/",
         {
           first_name: first_name,
@@ -105,28 +96,28 @@ const Admin = () => {
           },
         }
       );
-    
-      localStorage.setItem('isEditing', JSON.stringify(false))
-      localStorage.setItem('isAuth', JSON.stringify(true))
-      dispatch(getIsAuth(true))
-      showToastSuccess()
 
-    dispatch(getUserUpdate(true))
-    setButtonClicked(true);
-    setChangeBtn(!changeBtn)
-        
+      localStorage.setItem("isEditing", JSON.stringify(false));
+      localStorage.setItem("isAuth", JSON.stringify(true));
+      dispatch(getIsAuth(true));
+      showToastSuccess();
+
+      dispatch(getUserUpdate(true));
+      setButtonClicked(true);
+      setChangeBtn(!changeBtn);
     } catch (error) {
       console.log(error);
       if (error.response.data?.error?.email && error.response.status >= 400) {
-
         return showToastMessage();
-        
-      }else if( error.response.data?.error?.username && error.response.status >= 400) {
-        return showToastUsername()
+      } else if (
+        error.response.data?.error?.username &&
+        error.response.status >= 400
+      ) {
+        return showToastUsername();
       }
     }
   };
-  
+
   const submit = (e) => {
     e.preventDefault();
 
@@ -149,10 +140,11 @@ const Admin = () => {
       position: "top-right",
     });
   };
+  console.log(isEditing);
   return (
     <Box>
       <Container maxW="636px">
-      <Toaster richColors />
+        <Toaster richColors />
         <Box display="flex" alignItems="center" mt="15px" gap="175px">
           <Link to={"/"}>
             <Box display="flex" gap="6px" alignItems="center" cursor="pointer">
@@ -186,7 +178,6 @@ const Admin = () => {
         </Box>
 
         <Box
-         
           onClick={handleImageClick}
           cursor="pointer"
           mt="138px"
@@ -227,7 +218,7 @@ const Admin = () => {
               />
             ) : (
               <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
-                {userData?.first_name ? userData?.first_name  : 'имя'}
+                {userData?.first_name ? userData?.first_name : "имя"}
               </Heading>
             )}
             {isEditing ? (
@@ -267,7 +258,6 @@ const Admin = () => {
                 size="md"
                 type="date"
               />
-         
             ) : (
               <Heading fontSize={"16px"} color={"#494949"} p={"10px 0"}>
                 15.11.2005
@@ -282,13 +272,11 @@ const Admin = () => {
             >
               <Button
                 onClick={() => !isEditing && setModal(true)}
-           
                 transition="1s"
                 bg="transparent"
                 _hover={{ background: "transparent" }}
                 color="#5458EA"
                 fontSize="16px"
-               
                 fontFamily="Inter, sans-serif"
                 letterSpacing="-0.408px"
                 p="0"
@@ -300,7 +288,6 @@ const Admin = () => {
                 color="#C0C0C0"
                 fontFamily="Inter, sans-serif"
                 fontSize="16px"
-              
                 letterSpacing="-0.408px"
               >
                 {userData?.phone}
@@ -322,7 +309,6 @@ const Admin = () => {
                 color="#000"
                 fontFamily="Inter, sans-serif"
                 fontSize="16px"
-            
                 letterSpacing="-0.408px"
                 fontWeight="600"
               >
@@ -330,36 +316,34 @@ const Admin = () => {
               </Heading>
             )}
           </Box>
-          <Box display={changeBtn ? 'none' : "block"}>
-              <Button
-            type="submit"
-            display={closeBtn ? "block" : "none"}
-            pos={"absolute"}
-            top={"12px"}
-            right={"95px"}
-            borderRadius={"50px"}
-            bg={"rgba(192, 192, 192, 0.20)"}
-            h={"28px"}
-            fontFamily={"Inter,sans-serif"}
-          >
-       Готово
-          </Button>
+          <Box>
+            <Button
+              type="submit"
+              display={closeBtn ? "block" : "none"}
+              pos={"absolute"}
+              top={"12px"}
+              right={"95px"}
+              borderRadius={"50px"}
+              bg={"rgba(192, 192, 192, 0.20)"}
+              h={"28px"}
+              fontFamily={"Inter,sans-serif"}
+            >
+              Готово
+            </Button>
           </Box>
           <Button
-            onClick={()=> {
-              localStorage.setItem('isEditing', JSON.stringify(true))
-              setChangeBtn(!changeBtn)
+            onClick={() => {
+              localStorage.setItem("isEditing", JSON.stringify(true));
             }}
-            display={changeBtn ? "block" : "none"}
             pos={"absolute"}
             top={"12px"}
-            right={"95px"}
+            right={"35px"}
             borderRadius={"50px"}
             bg={"rgba(192, 192, 192, 0.20)"}
             h={"28px"}
             fontFamily={"Inter,sans-serif"}
           >
-       изм
+            изм
           </Button>
         </form>
         <Button
@@ -388,11 +372,7 @@ const Admin = () => {
         left="30%"
         transition="1s"
       >
-        <Verify
-          setModal={setModal}
-          modal={modal}
-          
-        />
+        <Verify setModal={setModal} modal={modal} />
       </Box>
     </Box>
   );
