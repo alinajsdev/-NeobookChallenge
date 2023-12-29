@@ -35,9 +35,8 @@ const Login = () => {
       const { access, refresh } = res.data;
       // console.log(access);
       localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem('accessToken', access)
+      localStorage.setItem("accessToken", access);
       axios.defaults.headers.common["Authorization"] = `Bearer ${access}`;
-
 
       navigate("/profile");
     } catch (error) {
@@ -181,13 +180,12 @@ const Login = () => {
           </Button>
         </form>
 
-        <NavLink to={'/register'}>
+        <NavLink to={"/register"}>
           <Heading
             color={"#5458EA"}
             fontSize={"14px"}
             fontFamily={"Inter, sans-serif"}
             mt={"196px"}
-            
             textAlign={"center"}
             cursor={"pointer"}
             fontWeight={"500"}

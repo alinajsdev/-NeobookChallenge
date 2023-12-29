@@ -25,7 +25,6 @@ const Register = () => {
 
   const [form, setForm] = useState(false);
 
-
   const showToastMessage = () => {
     toast.error("Данный пользователь уже зарегистрирован", {
       position: "top-right",
@@ -40,7 +39,7 @@ const Register = () => {
       });
 
       if (data.username || data.email) {
-       return showToastMessage()
+        return showToastMessage();
       } else {
         setForm(true);
       }
@@ -70,7 +69,7 @@ const Register = () => {
     <Flex>
       <AuthBg />
       <Toaster richColors />
-      <Flex flexDirection={"column"}   >
+      <Flex flexDirection={"column"}>
         <Button
           onClick={() => navigate("/login")}
           pos={"absolute"}
@@ -107,17 +106,26 @@ const Register = () => {
         >
           Register
         </Heading>
-        <Box display={form ? "none" : "block"} pos={'relative'}  mt={"240px"}
-        ml={"192px"}>
+        <Box
+          display={form ? "none" : "block"}
+          pos={"relative"}
+          mt={"240px"}
+          ml={"192px"}
+        >
           <form onSubmit={handleSubmit}>
-            <Box >
-              <FormLabel style={{ opacity: values.username ? 1 : 0 }}    color={"#C0C0C0"}
+            <Box>
+              <FormLabel
+                style={{ opacity: values.username ? 1 : 0 }}
+                color={"#C0C0C0"}
                 fontSize={"14px"}
                 fontFamily={"Inter "}
                 mt={"0px"}
                 position={"absolute"}
                 top={"-6px"}
-                fontWeight={"400"}>name</FormLabel>
+                fontWeight={"400"}
+              >
+                name
+              </FormLabel>
               <Input
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -127,8 +135,8 @@ const Register = () => {
                 name="username"
                 placeholder="Имя пользователя"
               />
-                 <Box width={"335px"} height={"0.5px"} bg={"#C0C0C0"} />
-                 {errors.username && (
+              <Box width={"335px"} height={"0.5px"} bg={"#C0C0C0"} />
+              {errors.username && (
                 <small
                   style={{ position: "absolute", top: "45px", color: "red" }}
                 >
@@ -136,14 +144,18 @@ const Register = () => {
                 </small>
               )}
             </Box>
-            <Box pos={'relative'} mt={'47px'}>
-              <FormLabel  style={{ opacity: values.email ? 1 : 0 }}  color={"#C0C0C0"}
+            <Box pos={"relative"} mt={"47px"}>
+              <FormLabel
+                style={{ opacity: values.email ? 1 : 0 }}
+                color={"#C0C0C0"}
                 fontSize={"14px"}
                 fontFamily={"Inter "}
-             
                 position={"absolute"}
                 top={"-6px"}
-                fontWeight={"400"}>email</FormLabel>
+                fontWeight={"400"}
+              >
+                email
+              </FormLabel>
               <Input
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -153,8 +165,8 @@ const Register = () => {
                 type="email"
                 placeholder="Почта"
               />
-                 <Box width={"335px"} height={"0.5px"} bg={"#C0C0C0"} />
-                 {errors.email && (
+              <Box width={"335px"} height={"0.5px"} bg={"#C0C0C0"} />
+              {errors.email && (
                 <small
                   style={{ position: "absolute", top: "45px", color: "red" }}
                 >
@@ -165,17 +177,19 @@ const Register = () => {
             <Button
               type="submit"
               bg={"#5458EA"}
-              mt={'80px'}
+              mt={"80px"}
               width={"335px"}
               height={"44px"}
               color={"#fff"}
               fontFamily={"Inter, sans-serif"}
               borderRadius={"80px"}
               _hover={{ bg: "#5458EA" }}
-           >Далее</Button>
+            >
+              Далее
+            </Button>
           </form>
         </Box>
-        <Box display={form ? "block" : "none"} ml={'192px'} mt={'170px'}>
+        <Box display={form ? "block" : "none"} ml={"192px"} mt={"170px"}>
           <Password username={username} email={email} />
         </Box>
       </Flex>
