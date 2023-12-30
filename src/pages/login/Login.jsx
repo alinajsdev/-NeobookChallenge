@@ -16,7 +16,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import ForgotPassword from "./ForgotPassword";
 import { loginValidation } from "./LoginValidation";
-
 import Eye from "../../assets/images/eye-disable.png";
 import EyeClose from "../../assets/images/eye.png";
 import AuthBg from "../../components/AuthBg";
